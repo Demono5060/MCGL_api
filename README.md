@@ -1,12 +1,12 @@
 # MCGL_api
 Api для быстрого парсинга и работы с форумом и картой проекта https://minecraft-galaxy.ru/
-
+<!-- 
 ## Установка
 Для работы api потребуются библиотеки requests и beautifulsoup4
 ```
 pip install requests
 pip install beautifulsoup4
-```
+``` -->
 
 ## Данные для авторизации
 Для авторизации используются 4 параметра:

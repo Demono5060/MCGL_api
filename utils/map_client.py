@@ -3,5 +3,5 @@ class MapClient:
         self.session = session
         self.domain = "map.minecraft-galaxy.ru"
 
-    def get(self, url, params):
+    def get(self, url, params=None):
         return self.session.get("https://"+self.domain+url, params=params)

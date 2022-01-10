@@ -53,7 +53,6 @@ class Fortress(object):
         return log
 
     def get_fortress_log_capture(self, log_url):
-        # content = self.session.get('https://forum.minecraft-galaxy.ru'+log_url+"?t=3")
         content = self.mcgl.forum_client.get(log_url, {'t': '3'})
         log = []
         for block in bs(content.text, 'html.parser').find_all('table', class_="topics"):

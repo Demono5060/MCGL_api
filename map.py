@@ -7,7 +7,7 @@ class Map(object):
         self.mcgl = mcgl
 
     def get_systems(self):
-        systems = self.session.get("https://map.minecraft-galaxy.ru/systems/")
+        systems = self.mcgl.map_client.get('/systems')
         systems = json.loads(systems.text)
         res = {}
         for i in systems:
@@ -16,14 +16,12 @@ class Map(object):
         return res
 
     def get_players(self, server_id):
-        f = 'http://map.minecraft-galaxy.ru/players/' + str(server_id) + '?d=0&filter=2&recap='
-        self.session.get('https://map.minecraft-galaxy.ru/#0/0/12/0/43/')
-        resp = self.session.get(f).text.replace("{\"players\":", "").replace(",\"error\":2}", "") \
-            .replace(",\"error\":0}", "")
-        players = json.loads(resp)
+        self.mcgl.map_client.get('/#0/0/1/0/10/')
+        resp = self.mcgl.map_client.get("/players/"+str(server_id), {'d': '0', 'filter': 2, 'recap': ''})
+        players = json.loads(resp.text).get('players')
         return players
 
     def get_zone_info(self, w, x, z):
-        resp = self.session.get('https://map.minecraft-galaxy.ru/zoneinfo/?w=' + str(w) + '&x=' + str(x) + '&y=' + str(z))
+        resp = self.mcgl.map_client.get('/zoneinfo/', {'w': str(w), 'x': str(x), 'y': str(z)})
         info = json.loads(base64.b64decode(resp.text))
         return info

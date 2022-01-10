@@ -3,6 +3,7 @@ from forum import Forum
 from map import Map
 from utils.map_client import MapClient
 from utils.forum_client import ForumClient
+from bs4 import BeautifulSoup as bs
 
 
 class MCGL(object):
@@ -16,8 +17,8 @@ class MCGL(object):
         self.auth()
         self.forum = Forum(self)
         self.map = Map(self)
-        self.map_client = MapClient(self.session)
-        self.forum_client = ForumClient(self.session)
+        self.map_client = MapClient(self)
+        self.forum_client = ForumClient(self)
 
     def auth(self):
         if not self.login:
@@ -30,3 +31,9 @@ class MCGL(object):
             'fcode': self.fcode,
             'recap': self.recap
         })
+
+    def is_logged_in(self):
+        html = self.session.get('https://forum.minecraft-galaxy.ru/main/')
+        if bs(html.text, 'html.parser').find('div', class_='button-container').a['href'] == "/guilogin/":
+            return False
+        return True

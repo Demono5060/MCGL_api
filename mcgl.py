@@ -1,5 +1,8 @@
 from requests import Session
 from forum import Forum
+from map import Map
+from utils.map_client import MapClient
+from utils.forum_client import ForumClient
 
 
 class MCGL(object):
@@ -11,7 +14,10 @@ class MCGL(object):
         self.session = Session()
         self.session.headers.update({'User-Agent': 'MCGL_API'})
         self.auth()
-        self.forum = Forum(self.session, self)
+        self.forum = Forum(self)
+        self.map = Map(self)
+        self.map_client = MapClient(self.session)
+        self.forum_client = ForumClient(self.session)
 
     def auth(self):
         if not self.login:

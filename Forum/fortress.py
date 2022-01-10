@@ -2,12 +2,11 @@ from bs4 import BeautifulSoup as bs
 
 
 class Fortress(object):
-    def __init__(self, session, mcgl):
-        self.session = session
+    def __init__(self, mcgl):
         self.mcgl = mcgl
 
     def get_fortress_logs_list(self, fortress_id):
-        content = self.session.get("https://forum.minecraft-galaxy.ru/fortresshistory/"+fortress_id)
+        content = self.mcgl.forum_client.get('/fortresshistory/'+fortress_id)
         logs = []
         for block in bs(content.text, 'html.parser').find_all('tr'):
             block_info = {}
@@ -19,7 +18,7 @@ class Fortress(object):
         return logs
 
     def get_fortress_list(self):
-        content = self.session.get("https://forum.minecraft-galaxy.ru/fortress/")
+        content = self.mcgl.forum_client.get('/fortress/')
         fortress = []
         for block in bs(content.text, 'html.parser').find_all('tr'):
             block_info = {}
@@ -37,7 +36,7 @@ class Fortress(object):
         return fortress
 
     def get_fortress_log_pvp(self, log_url):
-        content = self.session.get('https://forum.minecraft-galaxy.ru'+log_url+"?t=6")
+        content = self.mcgl.forum_client.get(log_url, {'t': '6'})
         log = []
         for block in bs(content.text, 'html.parser').find_all('table', class_="bc_table"):
             for tr in block.find_all('tr', class_=['bc_row_1', 'bc_row_0']):
@@ -54,7 +53,8 @@ class Fortress(object):
         return log
 
     def get_fortress_log_capture(self, log_url):
-        content = self.session.get('https://forum.minecraft-galaxy.ru'+log_url+"?t=3")
+        # content = self.session.get('https://forum.minecraft-galaxy.ru'+log_url+"?t=3")
+        content = self.mcgl.forum_client.get(log_url, {'t': '3'})
         log = []
         for block in bs(content.text, 'html.parser').find_all('table', class_="topics"):
             for tr in block.find_all('tr'):

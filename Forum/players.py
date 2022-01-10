@@ -2,8 +2,7 @@ from bs4 import BeautifulSoup as bs
 
 
 class Players(object):
-    def __init__(self, session, mcgl):
-        self.session = session
+    def __init__(self, mcgl):
         self.mcgl = mcgl
 
     @staticmethod
@@ -54,24 +53,33 @@ class Players(object):
 
             else:
                 for item in block.find_all('div', class_='item'):
-                    title = item.find('span', class_='title').text.replace('\t', '').replace('\n', '')
-                    value = item.find('span', class_='value').text.replace('\t', '').replace('\n', '')
-                    info.append({title: value})
+                    if item.find('span', class_='title'):
+                        title = item.find('span', class_='title').text.replace('\t', '').replace('\n', '')
+                        value = item.find('span', class_='value').text.replace('\t', '').replace('\n', '')
+                        info.append({title: value})
                 res[block_name] = info
         return res
 
     def get_user_by_id(self, user_id: int):
-        resp = self.session.get('https://forum.minecraft-galaxy.ru/profilemain/' + user_id)
+        resp = self.mcgl.forum_client.get('/profilemain/'+user_id)
         return self._get_user_general_info(resp.text)
 
     def get_user_by_nickname(self, nickname: str):
-        resp = self.session.post('https://forum.minecraft-galaxy.ru/users/', data={'form': '',
+        resp = self.mcgl.forum_client.post('/users/', data={'form': '',
                                                                                    'search': '',
                                                                                    'login': nickname})
-        user_id = bs(resp.text).find('td', class_='text-row').a['href']
-        resp = self.session.get('https://forum.minecraft-galaxy.ru' + user_id)
+        user_page = bs(resp.text, "html.parser").find('td', class_='text-row').a['href']
+        resp = self.mcgl.forum_client.get(user_page)
         return self._get_user_general_info(resp.text)
 
     def get_user_clan_by_id(self, user_id: int):
-        resp = self.session.get('https://forum.minecraft-galaxy.ru/profilemain/' + user_id)
+        resp = self.mcgl.forum_client.get("/profilemain/", user_id)
+        return self.__get_user_clan_info(resp.text)
+
+    def get_user_clan_by_nickname(self, nickname: str):
+        resp = self.mcgl.forum_client.post('/users/', data={'form': '',
+                                                            'search': '',
+                                                            'login': nickname})
+        user_page = bs(resp.text, "html.parser").find('td', class_='text-row').a['href']
+        resp = self.mcgl.forum_client.get(user_page)
         return self.__get_user_clan_info(resp.text)

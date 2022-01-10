@@ -3,8 +3,7 @@ import base64
 
 
 class Map(object):
-    def __init__(self, session, mcgl):
-        self.session = session
+    def __init__(self, mcgl):
         self.mcgl = mcgl
 
     def get_systems(self):

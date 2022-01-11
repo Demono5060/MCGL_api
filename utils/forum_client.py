@@ -1,5 +1,3 @@
-from bs4 import BeautifulSoup as bs
-
 class ForumClient:
     def __init__(self, mcgl):
         self.mcgl = mcgl

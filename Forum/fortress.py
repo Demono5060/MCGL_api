@@ -43,6 +43,7 @@ class Fortress(object):
                 info = {}
                 td = tr.find_all('td')
                 info['nickname'] = td[0].text
+                info['profile'] = td[0].a['href']
                 info['clan'] = td[1].text
                 info['side'] = td[2].text
                 info['race'] = td[3].text
@@ -62,20 +63,9 @@ class Fortress(object):
                     td = tr.find_all('td', class_=['author-row', "text-row"])
                     info['time'] = td[0].text
                     info['nickname'] = td[1].text
+                    info['profile'] = td[1].a['href']
                     info['clan'] = td[2].text
+                    info['clan_url'] = td[2].a['href']
                     info['event'] = td[3].text
                     log.append(info)
-        return log
-
-    def get_fortress_log_points(self, log_url):
-        content = self.mcgl.forum_client.get(log_url)
-        log = []
-        for tr in bs(content.text, 'html.parser').find('table', class_='bc_table').find_all('tr', class_=['bc_row_1',
-                                                                                                          'bc_row_0']):
-            td = tr.find_all('td')
-            info = {'clan': td[0].text, 'join': td[1].text, 'retention': td[2].text, 'capture': td[3].text,
-                    'defence': td[4].text, 'defence_of_flag':td[5].text, 'flag_defence': td[6].text,
-                    'flag_of_attackers': td[7].text, 'object': td[8].text, 'pvp': td[9].text,
-                    'barrier': td[10].text, 'summary': td[11].text}
-            log.append(info)
         return log

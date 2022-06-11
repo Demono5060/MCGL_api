@@ -32,6 +32,9 @@ class Fortress(object):
                 block_info['clan_owner_url'] = a[2]['href']
                 block_info['server_name'] = a[3].text
                 block_info['server_url'] = a[3]['href']
+            if block.find('td', class_='author-row'):
+                td = block.find_all_next('td', class_='author-row')
+                block_info['current_state'] = td[2].text
                 fortress.append(block_info)
         return fortress
 

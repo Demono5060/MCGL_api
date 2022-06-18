@@ -1,3 +1,4 @@
+import requests.exceptions
 from requests import Session
 from forum import Forum
 from map import Map
@@ -24,16 +25,26 @@ class MCGL(object):
         if not self.login:
             raise Exception('Login is required to auth')
 
-        self.session.get('https://forum.minecraft-galaxy.ru/guilogin/')
-        self.session.post('https://forum.minecraft-galaxy.ru/login.php', data={
-            'login': self.login,
-            'pass': self.password,
-            'fcode': self.fcode,
-            'recap': self.recap
-        })
+        while True:
+            try:
+                self.session.get('https://forum.minecraft-galaxy.ru/guilogin/')
+                self.session.post('https://forum.minecraft-galaxy.ru/login.php', data={
+                    'login': self.login,
+                    'pass': self.password,
+                    'fcode': self.fcode,
+                    'recap': self.recap
+                })
+                break
+            except requests.exceptions.ConnectionError as err:
+                print(err)
 
     def is_logged_in(self):
-        html = self.session.get('https://forum.minecraft-galaxy.ru/main/')
+        try:
+            html = self.session.get('https://forum.minecraft-galaxy.ru/main/')
+        except Exception as e:
+            print(e)
+            return False
+
         if bs(html.text, 'html.parser').find('div', class_='button-container').a['href'] == "/guilogin/":
             return False
         return True
